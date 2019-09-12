@@ -21,7 +21,6 @@
   var svg = d3.select("body").append("svg")
   .attr("width", width)
   .attr("height", height);
-
   //Adding water
 
   svg.append("path")
@@ -121,5 +120,10 @@
         if(cnt[i].id == sel.value) {return cnt[i];}
       }
     };
+//Начало кода для появления таблицы
+  var infoTable = document.getElementById('info'),
+      selectedCountry = document.querySelector('path.land');
+      selectedCountry.onclick = function(){
+        infoTable.style.display = block;
+      }
   };
-  
