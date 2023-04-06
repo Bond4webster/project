@@ -27,8 +27,8 @@
    ////////////////////////////////////////
    //Функция для выбора случайной страны из массива стран
   function countryGeneration() {
-  //Делаем запрос на https://restcountries.eu/rest/v2/all и берём от туда наш json массив с информацией(Если у тебя он дальше будет в файле , то берёшь массив из файла)
-   var requestURL = 'https://restcountries.eu/rest/v2/all';
+  //Делаем запрос на https://restcountries.com/v3.1/all и берём от туда наш json массив с информацией
+   var requestURL = 'https://restcountries.com/v3.1/all';
    var request = new XMLHttpRequest();
    request.open('GET', requestURL);
    request.responseType = 'json';
@@ -39,7 +39,7 @@
    var Info = request.response; //Переводим json в js массив
    var i = randomInteger(0,244); // i - будет случайным числом
    //prompt('The capital of '+Info[i].name);
-   var country = Info[i].name;
+   var country = Info[i].name.common;
    return country;
      }
    }
@@ -48,15 +48,15 @@
    $(document).ready(function() {
     countryGeneration();//Вызываем нашу функция
 
-     $('svg').click(function(){// Если  мы нажали в области svg
+     $('svg').click(function(){// Если мы нажали в области svg
 
       if($("#info").css('display') == 'none') //Если наша info Скрыта , то открываем её
       {
         $("#info").show() ;//show() автоматически устанавливает для display свойство block
       }
 
-      //Делаем запрос на https://restcountries.eu/rest/v2/all и берём от туда наш json массив с информацией
-       var requestURL = 'https://restcountries.eu/rest/v2/all';
+      //Делаем запрос на https://restcountries.com/v3.1/all и берём от туда наш json массив с информацией
+       var requestURL = 'https://restcountries.com/v3.1/all';
        var request = new XMLHttpRequest();
        request.open('GET', requestURL);
        request.responseType = 'json';
@@ -68,21 +68,23 @@
        var i;
        for( i=0;i<255;i++)//Идем по массиву пока не встретим совпадение
        {
-          if( Info[i].name == $(".countryTooltip").text())
+          if( Info[i]?.name?.common == $(".countryTooltip").text())
           {
             break;
           }
        }
+       var currencies = Object.values(Info[i]?.currencies)[0].name;
+       var languages = Object.values(Info[i]?.languages)[0];
        //Заполняем таблицу
-       $("#name").text(Info[i].name);
-       $("#capital").text(Info[i].capital);
-       $("#flag").attr("src",Info[i].flag);
-       $("#population").text(Info[i].population);
-       $("#area").text(Info[i].area +' km²');
-       $("#currencies").text(Info[i].currencies[0].name);
-       $("#languages").text(Info[i].languages[0].name);
-       $("#timezones").text(Info[i].timezones);
-       $("#borders").text(Info[i].borders);
+       $("#name").text(Info[i]?.name?.common);
+       $("#capital").text(Info[i]?.capital[0]);
+       $("#flag").attr("src",Info[i]?.flags.svg);
+       $("#population").text(Info[i]?.population);
+       $("#area").text(Info[i]?.area +' km²');
+       $("#currencies").text(currencies);
+       $("#languages").text(languages);
+       $("#timezones").text(Info[i]?.timezones.join(", "));
+       $("#borders").text(Info[i]?.borders);
      }
 
 
@@ -127,7 +129,7 @@
           <td>Capital:</td><td id="capital"></td>
         </tr>
         <tr>
-          <td>Flag:</td><td ><img id="flag" src="URL" alt="Флаг"></td>
+          <td>Flag:</td><td ><img id="flag" alt="Флаг"></td>
         </tr>
         <tr>
           <td>Area:</td><td id="area"></td>
